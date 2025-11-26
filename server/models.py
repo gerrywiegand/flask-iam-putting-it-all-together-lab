@@ -27,7 +27,7 @@ class User(db.Model):
 
     @validates("username")
     def validate_username(self, key, username):
-        if len(username) < 3 or len(username) > 20:
+        if not username or len(username) < 3 or len(username) > 20:
             raise ValueError("Username must be between 3 and 20 characters long.")
         return username
 
@@ -58,6 +58,8 @@ class UserSchema(Schema):
     id = fields.Integer()
     username = fields.String()
     bio = fields.String()
+    image_url = fields.String()
+    recipes = fields.Nested("RecipeSchema", many=True, exclude=("user",))
 
 
 class RecipeSchema(Schema):
@@ -66,3 +68,4 @@ class RecipeSchema(Schema):
     instructions = fields.String()
     user_id = fields.Integer()
     minutes_to_complete = fields.Integer()
+    user = fields.Nested(UserSchema)
